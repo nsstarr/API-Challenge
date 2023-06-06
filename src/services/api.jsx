@@ -29,6 +29,57 @@ export const login = async (email, password) => {
   }
 };
 
+export const registerUser = async (email, password, roles) => {
+  const data = {
+    email,
+    password,
+    c_password: password,
+    roles,
+  };
+
+  try {
+    const response = await axios.post(`${BASE_URL}/users`, data);
+
+    if (response.status !== 200) {
+      throw new Error('Registration failed');
+    }
+
+    const responseData = response.data;
+
+    if (!responseData.success) {
+      throw new Error(responseData.message || 'Registration failed');
+    }
+
+    // Log in with the registered user's credentials to obtain a new token
+    const loginResponse = await axios.post(`${BASE_URL}/users/login`, {
+      email,
+      password,
+    });
+
+    if (loginResponse.status !== 200) {
+      throw new Error('Login failed');
+    }
+
+    const loginData = loginResponse.data;
+
+    if (!loginData.success) {
+      throw new Error(loginData.message || 'Login failed');
+    }
+
+    const token = loginData.data.token;
+
+    // Return the registered user data and the new token
+    return {
+      user: responseData.data,
+      token: token,
+    };
+  } catch (error) {
+    console.error('Error registering user:', error);
+    throw error;
+  }
+};
+
+
 export const resetPassword = async (email) => {
   try {
     const response = await axios.post(`${BASE_URL}/users/reset-password`, {
