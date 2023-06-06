@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { registerUser, login } from '../services/api';
+import { registerUser } from '../services/api';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -16,17 +16,12 @@ const Register = () => {
     }
 
     try {
-      const registeredUser = await registerUser(email, password, roles);
+       const token = localStorage.getItem('token');
+      // Register the user using the access token
+      const registeredUser = await registerUser(email, password, roles, token);
 
-      // Log in to obtain the token for the registered user
-      const token = await login(email, password);
-      
-      // Access the registered user from the response
-      const { user } = registeredUser;
-
-      console.log('Registered User:', user);
+      console.log('Registered User:', registeredUser);
       console.log('Token:', token);
-
 
     } catch (error) {
       console.error(error);

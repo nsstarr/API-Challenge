@@ -29,7 +29,7 @@ export const login = async (email, password) => {
   }
 };
 
-export const registerUser = async (email, password, roles) => {
+export const registerUser = async (email, password, roles, accessToken) => {
   const data = {
     email,
     password,
@@ -38,7 +38,11 @@ export const registerUser = async (email, password, roles) => {
   };
 
   try {
-    const response = await axios.post(`${BASE_URL}/users`, data);
+    const response = await axios.post(`${BASE_URL}/users`, data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     if (response.status !== 200) {
       throw new Error('Registration failed');
