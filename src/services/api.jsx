@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://laravel-api.albrecht.uk.com/api'
+// const BASE_URL = 'https://laravel-api.albrecht.uk.com/api'
+const BASE_URL = '/api'
 
 
 export const login = async (email, password) => {
@@ -27,6 +28,23 @@ export const login = async (email, password) => {
     return responseData.token;
   } catch (error) {
     console.error('Error logging in:', error);
+    throw error;
+  }
+};
+
+export const resetPassword = async (email) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/users/reset-password`, {
+      email,
+    });
+
+    if (response.data.success) {
+      console.log('Reset password email sent!');
+    } else {
+      throw new Error(response.data.message || 'Reset password failed');
+    }
+  } catch (error) {
+    console.error('Error resetting password:', error);
     throw error;
   }
 };

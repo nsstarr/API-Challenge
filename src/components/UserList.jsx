@@ -11,7 +11,6 @@ const UserList = () => {
         setUsers(usersData);
       } catch (error) {
         console.error('Error retrieving users:', error);
-        // Handle error and display appropriate message to the user
       }
     };
     
