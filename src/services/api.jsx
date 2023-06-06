@@ -6,26 +6,23 @@ const BASE_URL = '/api'
 
 export const login = async (email, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/users/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*', // Allow CORS
-      },
-      body: JSON.stringify({ email, password }),
+    const response = await axios.post(`${BASE_URL}/users/login`, {
+      email,
+      password,
     });
 
     if (response.status !== 200) {
       throw new Error('Login failed');
     }
 
-    const responseData = await response.json();
+    const responseData = response.data;
+    console.log('Response:' + responseData)
 
     if (!responseData.success) {
       throw new Error(responseData.message || 'Login failed');
     }
 
-    return responseData.token;
+    return responseData.data.token;
   } catch (error) {
     console.error('Error logging in:', error);
     throw error;
@@ -49,9 +46,14 @@ export const resetPassword = async (email) => {
   }
 };
 
-export const getUsers = async () => {
+export const getUsers = async (token) => {
   try {
-    const response = await axios.get(`${BASE_URL}/users`);
+    const response = await axios.get(`${BASE_URL}/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
+      },
+    });
+    console.log('Users' + response.data)
     return response.data;
   } catch (error) {
     console.error('Error retrieving users:', error);

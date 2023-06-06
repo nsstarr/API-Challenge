@@ -11,7 +11,8 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const token = await login(email, password);
-      localStorage.setItem('token', token);
+      console.log(token)
+      localStorage.setItem('token', token); // Store the token in local storage
       console.log('Login successful!')
       navigateTo('/users');
     } catch (error) {
